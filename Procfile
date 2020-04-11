@@ -1,0 +1,1 @@
+web: gunicorn portal_bancario.wsgi --log-file -

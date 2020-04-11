@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div style="height: 54px;padding-top: 13px;background-color: #31307d;padding-left: 25px;color: white;margin-top: 54px;border-radius: 8px;margin-bottom: 23px;">
+  <h5>Nuevo Movimiento</h5>
+</div>
+<form method="GET" action="{% url 'users:newMovement' pk_account pk_balance user.id %}" style="width: 321px;">
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Categoria</label>
+        <select class="form-control" id="exampleFormControlSelect1" name="category">
+            <option value="" selected="">--- Seleccione una opcion ---</option>
+            {% for cat in categories %}
+            <option value="{{cat.id}}">{{cat.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Tipo de Movimiento</label>
+        <select class="form-control" id="exampleFormControlSelect1" name="typeMovement">
+            <option value="" selected="">--- Seleccione una opcion ---</option>
+            <option value="Ingreso">Ingreso</option>
+            <option value="Gasto">Gasto</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Monto</label>
+        <input type="number" class="form-control" id="exampleFormControlInput1" name="monto">
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput2">Fecha</label>
+        <input type="date" class="form-control" id="exampleFormControlInput2" name="date">
+    </div>
+
+    <input type="submit" class="btn btn-danger ml-2" value="Procesar movimiento">
+
+</form>
+
+
+{% endblock %}

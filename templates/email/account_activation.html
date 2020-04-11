@@ -1,0 +1,16 @@
+<html>
+<head>
+</head>
+<body style="width:80%; background-color: #f8f9fa;">
+  <div class="text" style="padding:2Opx; text-align: center;">
+    <h2>Hola {{user.username}}, te damos la bienvenida a PORTAL BANCARIO REMINGTON</h2>
+    <h3>Haz clic en el botón que aparece a continuación para activar tu cuenta.</h3>
+     <p>
+        <a href="http://{{ domain }}{% url 'users:activate' uidb64=uid token=token %}"
+          style="padding: 5px 15px; display: inline-block; border-radius: 5px; background:#0074ae; color: #ffffff;">
+          Activar Cuenta
+        </a>
+     </p>
+    </div>
+  </body>
+</html>

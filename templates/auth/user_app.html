@@ -1,0 +1,112 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="container" style="padding-left: 0px;margin-bottom: 18px;margin-top: 18px">
+    <h3 class=""><i>Administra tus cuentas!</i></h3>
+</div>
+
+{% if context %}
+	<div>
+	    <table class="table table-dark">
+	        <thead style="background-color: #31307d;">
+	            <tr>
+	            	
+	                <th scope="col">Numero cuenta</th>
+	                <th scope="col">Dia de creacion</th>
+	                <th scope="col">Tipo de cuenta</th>
+	                <th scope="col">Estado de la cuenta</th>
+	                <th></th>
+	            </tr>
+	        </thead>
+	        <tbody style="background-color: white;color: black;">
+	            {% for account in context %}
+	            <tr>
+	            	
+	                <td>{{account.account_number}}</td>
+	                <td>{{account.creation_day|date:"d/ m/ Y"}}</td>
+	                {% for typ in types %}
+	                	{% if typ.id == account.type_account %}
+	                		<td>{{typ.name}}</td>
+	                	{% endif %}
+	                {% endfor %}
+	                {% for states in state %}
+	                	{% if states.id == account.state_account %}
+	                		<td>{{states.name}}</td>
+	                	{% endif %}
+	                {% endfor %}
+	                {% if user.profile.rol.descripcion == "Empleado" %}
+	                <td>
+	                	
+                        {% if account.state_account == 1 %}
+                        <a href="{% url 'users:getBadget' account.id identification %}" title="Movimientos">
+                            <i class="material-icons">attach_money</i>
+                        </a>
+                        <a href="{% url 'users:disableStateAccount' account.id account.account_number account.creation_day account.type_account account.state_account identification %}" title="Desactivar cuenta">
+                            <i class="material-icons" style="color: #bd0f27;">do_not_disturb</i>
+                        </a>
+                        {% else %}
+                        <i class="material-icons" style="color: transparent;">attach_money</i>
+                        <a href="{% url 'users:disableStateAccount' account.id account.account_number account.creation_day account.type_account account.state_account identification %}" title="Activar cuenta">
+                            <i class="material-icons" style="color: green;">check_circle</i>
+                        </a>
+                        {% endif %}
+                        
+                    </td>
+	                {% else %}
+	                {% if account.state_account == 1 %}
+	                <td>
+                        <a href="{% url 'users:getBadget' account.id user.id %}" title="Movimientos">
+                            <i class="material-icons">attach_money</i>
+                        </a>
+                    </td>
+                    {% else %}
+                    <td></td>
+	                {% endif %}
+	                {% endif %}
+	                
+	                
+	                
+	            </tr>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+{% else %}
+	<h3>No hay cuentas creadas</h3>
+{% endif %}
+
+<div style="height: 54px;padding-top: 13px;background-color: #31307d;padding-left: 25px;color: white;margin-top: 54px;border-radius: 8px;margin-bottom: 23px;">
+	<h5>Crear una nueva cuenta</h5>
+</div>
+
+{% if user.profile.rol.descripcion == "Empleado" %}
+<form method="GET" action="{% url 'users:newAccount' identification %}" style="width: 279px;">
+    <div class="col-auto my-1" style="display: flex;">
+        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="option">
+        <option selected>Seleccionar...</option>
+        {% for typ in types %}
+        	<option>{{typ.name}}</option>
+        {% endfor %}
+      </select>
+        <input type="submit" class="btn btn-danger ml-2" value="Crear">
+    </div>
+</form>
+
+{% else %}
+<form method="GET" action="{% url 'users:newAccount' user.id %}" style="width: 279px;">
+    <div class="col-auto my-1" style="display: flex;">
+        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="option">
+        <option selected>Seleccionar...</option>
+        {% for typ in types %}
+        	<option>{{typ.name}}</option>
+        {% endfor %}
+      </select>
+        <input type="submit" class="btn btn-danger ml-2" value="Crear">
+    </div>
+</form>
+
+{% endif %}
+
+{% endblock %}
