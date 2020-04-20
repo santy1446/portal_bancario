@@ -1,11 +1,17 @@
 import requests
 
+#URL y Token del servicio WEB
+
 BASE_URL = 'https://apicuentasbancarias.herokuapp.com/'
 headers = {'Authorization': 'Token c6f6ce1b69d275eba8eab1b8cf9795ed26f44624'}
+
+#Obtener informacion de la API
 
 def getInfo(url):
 	response = requests.get(url, headers=headers)
 	return response
+
+#Agregar una cuenta
 
 def postAccount(account_number, pk_user, activate, type_account):
 	url = BASE_URL+'account/'
@@ -18,6 +24,7 @@ def postAccount(account_number, pk_user, activate, type_account):
         }
 	response = requests.post(url, json = newReg, headers=headers)
 
+#Agregar un movimiento
 def postMovement (id_account, id_balance, id_category, typ, monto, date):
         url = BASE_URL+'movement/'
         newReg = {
@@ -30,6 +37,7 @@ def postMovement (id_account, id_balance, id_category, typ, monto, date):
         }
         response = requests.post(url, json = newReg, headers=headers)
 
+#Actualizar balance
 def updateBalance(pk, tipo, monto, user, account):
         url = BASE_URL+"balance/"
         monto = int(monto)
@@ -68,6 +76,7 @@ def updateBalance(pk, tipo, monto, user, account):
                 print(response.content)
         return
 
+#Alterar el balance
 def alterBalance(pk, tipo, monto, user, account):
     url = BASE_URL+"balance/"
     monto = int(monto)

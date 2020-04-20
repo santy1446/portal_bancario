@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from .serializers import ProfileSerializer
 from .models import Profile
 from .services import getInfo, postAccount, postMovement, updateBalance, alterBalance
-#envio de correo para activar cuenta
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -22,7 +21,6 @@ from django.core.mail import EmailMultiAlternatives
 import requests
 import json
 from random import randint, uniform,random
-
 # ListView
 from django.views.generic.list import ListView
 #Login Requerido
@@ -32,8 +30,12 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from datetime import datetime
 from dateutil import parser
 
+#URL y Token del servicio WEB
+
 BASE_URL = 'https://apicuentasbancarias.herokuapp.com/'
 headers = {'Authorization': 'Token c6f6ce1b69d275eba8eab1b8cf9795ed26f44624'}
+
+#Formulario de registro de usuario
 
 def signup(request):
     if request.method == 'POST':
@@ -83,14 +85,17 @@ def ActivateUser(request, uidb64, token, backend='django.contrib.auth.backends.M
     else:
         return render(request,'registration/account_activation_invalid.html')
 
+#Vista de activacion de usuario
+
 def templateEmailSent(request, username):
     return render(request,'registration/account_activation.html', {'username': username})
 
-
+#Listar usuarios (Empleado)
 class UserList(PermissionRequiredMixin, ListView):
     permission_required = 'users.listarusuarios'
     model = User
 
+#Funcion de administrar cuentas
 @login_required
 def UserApp(request, pk):
     pk_user = pk
@@ -147,6 +152,8 @@ def UserApp(request, pk):
                 })
 
     return render(request, "auth/user_app.html", {'context': context, 'state': state, 'types': types, 'identification' : pk_user})
+
+#crear una nueva cuenta
 @login_required
 def newAccount(request, pk):
     option = request.GET.get('option')
@@ -168,6 +175,7 @@ def newAccount(request, pk):
     postAccount(account_number, pk_user, activate, type_account)
     return redirect('/users/userapp/%s'%pk_user)
 
+#Observar balance y moviminetos de una cuenta 
 @login_required
 def getBadget(request, pk, pk_user):
     #Get state Acounts
@@ -221,6 +229,7 @@ def getBadget(request, pk, pk_user):
 
     return render(request, 'auth/user_movement.html', {'BalanceObj' : BalanceObj, 'account_id': pk, 'movementList' : movementList, 'categoryList' : categoryList, 'pk_user' : pk_user})
 
+#Creacion de movimiento
 @login_required
 def Movement(request, pk):
     response = getInfo(BASE_URL+'balance/')
@@ -246,6 +255,7 @@ def Movement(request, pk):
 
     return render(request, 'auth/create_movement.html',{"pk_account":pk_account, "pk_balance":pk_balance, "categories": categories})
 
+#Crear nuevo movimiento
 @login_required
 def newMovement(request, pk_account, pk_balance, pk_user):
 
@@ -261,6 +271,7 @@ def newMovement(request, pk_account, pk_balance, pk_user):
     updateBalance(pk_balance, typeMovement, monto, pk_user, pk_account)
     return redirect('/users/getBadget/' + rest_url)
 
+#Eliminar movimiento
 def deleteMovement(request, pk_account, pk_balance, pk_user, pk_movement):
     rest_url = pk_account + '/' + pk_user
     response = getInfo(BASE_URL+'movement/')
@@ -278,6 +289,7 @@ def deleteMovement(request, pk_account, pk_balance, pk_user, pk_movement):
     alterBalance(pk_balance, typeMovement, monto, pk_user, pk_account)
     return redirect('/users/getBadget/' + rest_url)
 
+#Desactivar una cuenta (Empleado)
 def disableStateAccount(request, pk, account_number, creation_day, type_account, state_account, pk_user):
     url = BASE_URL+'account/'
     account_number = int(account_number)
