@@ -52,12 +52,6 @@
                         <i class="material-icons">delete_forever</i>
                     </a>
                 </td>
-                {% else %}
-                <td>
-                    <a href="{% url 'users:deleteMovement' account_id BalanceObj.id user.id data.id %}">
-                        <i class="material-icons">delete_forever</i>
-                    </a>
-                </td>
                 {% endif %}
                 
             </tr>

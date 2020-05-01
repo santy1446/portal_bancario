@@ -157,22 +157,26 @@ def UserApp(request, pk):
 @login_required
 def newAccount(request, pk):
     option = request.GET.get('option')
+    print("Opcion elegida: -------------", option)
     pk_user = int(pk)
     account_number = randint(0,999999999)
     activate = True
     state_account = 1
     #Get state Acounts
-    response = getInfo(BASE_URL+'typeAccount/')
-    if response.status_code == 200:
-        payload = response.json()
-        types = []
-        if response:
-            for data in payload:
-                if data['name'] == option:
-                    type_account = data['id']
+    
+    if option != "":
+        response = getInfo(BASE_URL+'typeAccount/')
+        if response.status_code == 200:
+            payload = response.json()
+            types = []
+            if response:
+                for data in payload:
+                    if data['name'] == option:
+                        type_account = data['id']
 
-    #POST new account
-    postAccount(account_number, pk_user, activate, type_account)
+        #POST new account
+        postAccount(account_number, pk_user, activate, type_account)
+
     return redirect('/users/userapp/%s'%pk_user)
 
 #Observar balance y moviminetos de una cuenta 
@@ -267,9 +271,12 @@ def newMovement(request, pk_account, pk_balance, pk_user):
     typeMovement = request.GET.get('typeMovement')
     monto = request.GET.get('monto')
     date = request.GET.get('date')
-    postMovement(pk_account, pk_balance, category, typeMovement, monto, date)
-    updateBalance(pk_balance, typeMovement, monto, pk_user, pk_account)
-    return redirect('/users/getBadget/' + rest_url)
+    if category != "" and typeMovement != "" and monto != "" and date != "":
+        postMovement(pk_account, pk_balance, category, typeMovement, monto, date)
+        updateBalance(pk_balance, typeMovement, monto, pk_user, pk_account)
+        return redirect('/users/getBadget/' + rest_url)
+    else:
+        return redirect('/users/movement/' + str(pk_account))
 
 #Eliminar movimiento
 def deleteMovement(request, pk_account, pk_balance, pk_user, pk_movement):

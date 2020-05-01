@@ -98,7 +98,7 @@
 <form method="GET" action="{% url 'users:newAccount' user.id %}" style="width: 279px;">
     <div class="col-auto my-1" style="display: flex;">
         <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="option">
-        <option selected>Seleccionar...</option>
+        <option selected value="">Seleccionar...</option>
         {% for typ in types %}
         	<option>{{typ.name}}</option>
         {% endfor %}
